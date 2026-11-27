@@ -1,5 +1,6 @@
 # Collects the Ontario MTO road weather stations every 10 minutes and publishes them as one file on the
 # "data" branch, which the site reads from raw.githubusercontent.com. Nothing is rebuilt or redeployed.
+# Each run also checks for a new daily snow and ice analysis (scripts/build-snow.mjs) and publishes it beside them.
 # GitHub's own timer proved unreliable here, so each run collects six times, ten minutes apart, and then
 # starts the next run itself. The hourly timer is only a backup that restarts the chain if it ever breaks.
 name: MTO stations
@@ -26,6 +27,8 @@ jobs:
         run: |
           git clone -q --depth 1 -b data "https://github.com/${{ github.repository }}.git" out || mkdir -p out
           rm -rf out/.git
+      - name: Fetch today's snow and ice analysis, if it is new
+        run: node scripts/build-snow.mjs out/snow.bin.gz || echo "snow and ice failed this run"
       - name: Collect and publish, six times
         run: |
           for round in 1 2 3 4 5 6; do
@@ -36,7 +39,7 @@ jobs:
                 git init -q -b data
                 git config user.name "github-actions[bot]"
                 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                git add mto.json hist
+                git add -A .
                 git commit -q -m "MTO stations $(date -u +%FT%RZ)"
                 # one commit only, replaced each time, so the branch never grows
                 git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
