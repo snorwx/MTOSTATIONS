@@ -22,6 +22,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Fetch the history published so far
+        run: |
+          git clone -q --depth 1 -b data "https://github.com/${{ github.repository }}.git" out || mkdir -p out
+          rm -rf out/.git
       - name: Collect and publish, six times
         run: |
           for round in 1 2 3 4 5 6; do
@@ -32,7 +36,7 @@ jobs:
                 git init -q -b data
                 git config user.name "github-actions[bot]"
                 git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                git add mto.json
+                git add mto.json hist
                 git commit -q -m "MTO stations $(date -u +%FT%RZ)"
                 # one commit only, replaced each time, so the branch never grows
                 git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data

@@ -7,4 +7,6 @@ A scheduled job runs `scripts/build-mto.mjs` every 10 minutes and publishes the 
 
     https://raw.githubusercontent.com/snorwx/MTOSTATIONS/data/mto.json
 
+It also keeps the past week of each station's readings in `hist/<station id>.json` on the same branch.
+
 Data source: Environment and Climate Change Canada / Ontario Ministry of Transportation.
