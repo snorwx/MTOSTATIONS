@@ -1,6 +1,7 @@
 # Collects the Ontario MTO road weather stations every 10 minutes and publishes them as one file on the
 # "data" branch, which the site reads from raw.githubusercontent.com. Nothing is rebuilt or redeployed.
 # Each round also collects the last three hours of mPING reports (scripts/build-mping.mjs) when the MPING_TOKEN secret is set.
+# Each round also collects the SIGMETs and AIRMETs in force over Canada (scripts/build-aviation.mjs).
 # Each run also checks for a new daily snow and ice analysis (scripts/build-snow.mjs) and publishes it beside them.
 # GitHub's own timer proved unreliable here, so each run collects six times, ten minutes apart, and then
 # starts the next run itself. The hourly timer is only a backup that restarts the chain if it ever breaks.
@@ -34,6 +35,7 @@ jobs:
         run: |
           for round in 1 2 3 4 5 6; do
             node scripts/build-mping.mjs out/mping.json || echo "mPING failed this round"
+            node scripts/build-aviation.mjs out/aviation.json || echo "aviation failed this round"
             if node scripts/build-mto.mjs out/mto.json; then
               (
                 cd out
