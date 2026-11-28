@@ -69,6 +69,8 @@ for (const b of [...bulletins].sort((a, c) => a.datetime.localeCompare(c.datetim
     });
     if (!levels.length) continue;
     if (!sites.has(m[1])) sites.set(m[1], new Map());
+    // the forecast made from the newest data wins a period two issues cover
+    if ((sites.get(m[1]).get(span.valid)?.based ?? 0) > span.based) continue;
     sites.get(m[1]).set(span.valid, { valid: span.valid, from: span.from, to: span.to, based: span.based, levels });
   }
 }
