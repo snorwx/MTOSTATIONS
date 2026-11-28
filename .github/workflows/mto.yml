@@ -3,6 +3,8 @@
 # Each round also collects the last three hours of mPING reports (scripts/build-mping.mjs) when the MPING_TOKEN secret is set.
 # Each round also collects the SIGMETs and AIRMETs in force over Canada (scripts/build-aviation.mjs).
 # Each round also collects the newest aerodrome forecast (TAF) for each Canadian aerodrome (scripts/build-taf.mjs).
+# Each round also collects the newest weather report from each Canadian aerodrome (scripts/build-metar.mjs) and the
+# past six hours of pilot reports over Canada (scripts/build-pirep.mjs).
 # Each run also checks for a new daily snow and ice analysis (scripts/build-snow.mjs) and publishes it beside them.
 # GitHub's own timer proved unreliable here, so each run collects six times, ten minutes apart, and then
 # starts the next run itself. The hourly timer is only a backup that restarts the chain if it ever breaks.
@@ -38,6 +40,8 @@ jobs:
             node scripts/build-mping.mjs out/mping.json || echo "mPING failed this round"
             node scripts/build-aviation.mjs out/aviation.json || echo "aviation failed this round"
             node scripts/build-taf.mjs out/taf.json || echo "TAFs failed this round"
+            node scripts/build-metar.mjs out/metar.json || echo "METARs failed this round"
+            node scripts/build-pirep.mjs out/pireps.json || echo "pilot reports failed this round"
             if node scripts/build-mto.mjs out/mto.json; then
               (
                 cd out
