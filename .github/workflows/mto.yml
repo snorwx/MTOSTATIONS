@@ -44,6 +44,8 @@ jobs:
             node scripts/build-taf.mjs out/taf.json || echo "TAFs failed this round"
             node scripts/build-metar.mjs out/metar.json || echo "METARs failed this round"
             node scripts/build-pirep.mjs out/pireps.json || echo "pilot reports failed this round"
+            node scripts/build-winds.mjs out/winds.json || echo "upper winds failed this round"
+            node scripts/build-gfa.mjs out/gfa.json || echo "area forecasts failed this round"
             if node scripts/build-mto.mjs out/mto.json; then
               (
                 cd out
