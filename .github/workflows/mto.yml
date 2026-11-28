@@ -2,6 +2,7 @@
 # "data" branch, which the site reads from raw.githubusercontent.com. Nothing is rebuilt or redeployed.
 # Each round also collects the last three hours of mPING reports (scripts/build-mping.mjs) when the MPING_TOKEN secret is set.
 # Each round also collects the SIGMETs and AIRMETs in force over Canada (scripts/build-aviation.mjs).
+# Each round also collects the SIGMETs and AIRMETs in force over the United States (scripts/build-aviation-us.mjs).
 # Each round also collects the newest aerodrome forecast (TAF) for each Canadian aerodrome (scripts/build-taf.mjs).
 # Each round also collects the newest weather report from each Canadian aerodrome (scripts/build-metar.mjs) and the
 # past six hours of pilot reports over Canada (scripts/build-pirep.mjs).
@@ -39,6 +40,7 @@ jobs:
           for round in 1 2 3 4 5 6; do
             node scripts/build-mping.mjs out/mping.json || echo "mPING failed this round"
             node scripts/build-aviation.mjs out/aviation.json || echo "aviation failed this round"
+            node scripts/build-aviation-us.mjs out/aviation-us.json || echo "US aviation failed this round"
             node scripts/build-taf.mjs out/taf.json || echo "TAFs failed this round"
             node scripts/build-metar.mjs out/metar.json || echo "METARs failed this round"
             node scripts/build-pirep.mjs out/pireps.json || echo "pilot reports failed this round"
