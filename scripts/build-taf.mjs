@@ -33,9 +33,14 @@ await Promise.all(
   Array.from({ length: 6 }, async () => {
     for (let b = queue.shift(); b; b = queue.shift()) {
       if (kept[b.url] === undefined) {
-        const res = await fetch(b.url, { signal: AbortSignal.timeout(30_000) });
-        if (!res.ok) continue;
-        kept[b.url] = await res.text();
+        // one bulletin that will not load must not cost the rest; it is tried again next round
+        try {
+          const res = await fetch(b.url, { signal: AbortSignal.timeout(30_000) });
+          if (!res.ok) continue;
+          kept[b.url] = await res.text();
+        } catch {
+          continue;
+        }
       }
       texts[b.url] = kept[b.url];
     }
